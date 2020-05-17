@@ -1,4 +1,4 @@
-package com.github.mrptqp.realworld.controllers;
+package com.github.mrptqp.realworld.controllers.auth;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.github.mrptqp.realworld.entities.User;

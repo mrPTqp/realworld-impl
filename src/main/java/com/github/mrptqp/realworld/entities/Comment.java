@@ -8,32 +8,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @Entity
-public class User {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private Long id;
 
-    @Email
-    private String email;
+    private LocalDateTime createdAt;
 
-    private String username;
+    private LocalDateTime updatedAt;
 
-    @JsonIgnore
-    private String password;
-
-    private String bio;
-
-    private String image;
-
-    private String token;
-
-    @JsonIgnore
-    private LocalDateTime expireDate;
+    private String body;
 }

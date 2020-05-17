@@ -2,6 +2,7 @@ package com.github.mrptqp.realworld.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mrptqp.realworld.entities.User;
+import com.github.mrptqp.realworld.exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld.exceptions.UserNotFoundException;
 import com.github.mrptqp.realworld.repo.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public User saveUser(User user) {
+        customerRepository.findByEmail(user.getEmail())
+                .ifPresent(u -> {
+                    throw new UserAlreadyExistException("User already exists! Choose a different name.");
+                });
+
+        customerRepository.findByUsername(user.getUsername())
+                .ifPresent(u -> {
+                    throw new UserAlreadyExistException("User already exists! Choose a different name.");
+                });
+
         customerRepository.save(user);
         return user;
     }
@@ -34,17 +45,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String login(String email, String password) {
-        String savedPassword = customerRepository.findByEmail(email)
+    public User login(String email, String password) {
+        String existPassword = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
 
-//        if (!encoder.matches(password, savedPassword)) {
-//            throw new UnauthorizedException("Password is incorrect, try again.");
-//        }
-
-        return customerRepository.login(email, savedPassword).map(getActualToken())
-                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
+        if (existPassword.equals(password)) {
+            return customerRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
+        } else {
+            throw new RuntimeException("Wrong password, please try again");
+        }
     }
 
     private Function<User, String> getActualToken() {

@@ -8,5 +8,5 @@ public interface CustomerService {
 
     User findById(Long id);
 
-    String login(String email, String password);
+    User login(String email, String password);
 }
