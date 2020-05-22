@@ -10,10 +10,6 @@ import com.github.mrptqp.realworld.users.repo.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-import java.util.function.Function;
-
 @Service("customerService")
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -41,20 +37,29 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(user);
 
-        UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setUsername(user.getUsername());
-        userDto.setPassword(user.getPassword());
-
-        return userDto;
+        return new UserDto(
+                user.getEmail(),
+                user.getUsername(),
+                null,
+                null,
+                null,
+                user.getPassword()
+        );
     }
 
     @Override
-    public User findById(Long id) {
-
-        return customerRepository
-                .findById(id)
+    public UserDto findById(Long id) {
+        User user = customerRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your id"));
+
+        return new UserDto(
+                user.getEmail(),
+                user.getUsername(),
+                user.getToken(),
+                user.getBio(),
+                user.getImage(),
+                user.getPassword()
+        );
     }
 
     @Override
@@ -67,39 +72,38 @@ public class CustomerServiceImpl implements CustomerService {
             User user = customerRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
 
-            UserDto userDto = new UserDto();
-            userDto.setEmail(user.getEmail());
-            userDto.setUsername(user.getUsername());
-            userDto.setPassword(user.getPassword());
-            userDto.setBio(user.getBio());
-            userDto.setImage(user.getImage());
-            userDto.setToken(user.getToken());
-
-            return userDto;
+            return new UserDto(
+                    user.getEmail(),
+                    user.getUsername(),
+                    user.getToken(),
+                    user.getBio(),
+                    user.getImage(),
+                    user.getPassword()
+            );
         } else {
             throw new RuntimeException("Wrong password, please try again");
         }
     }
 
-    private Function<User, String> getActualToken() {
-        return user -> {
-            String existingToken = user.getToken();
-
-            if (existingToken != null) {
-                LocalDateTime expireDate = user.getExpireDate();
-
-                if (expireDate.isAfter(LocalDateTime.now())) {
-                    return existingToken;
-                }
-            }
-
-            String token = UUID.randomUUID().toString();
-            user.setToken(token);
-            user.setExpireDate(LocalDateTime.now().plusHours(24));
-            customerRepository.save(user);
-
-            return token;
-        };
-    }
+//    private Function<User, String> getActualToken() {
+//        return user -> {
+//            String existingToken = user.getToken();
+//
+//            if (existingToken != null) {
+//                LocalDateTime expireDate = user.getExpireDate();
+//
+//                if (expireDate.isAfter(LocalDateTime.now())) {
+//                    return existingToken;
+//                }
+//            }
+//
+//            String token = UUID.randomUUID().toString();
+//            user.setToken(token);
+//            user.setExpireDate(LocalDateTime.now().plusHours(24));
+//            customerRepository.save(user);
+//
+//            return token;
+//        };
+//    }
 
 }
