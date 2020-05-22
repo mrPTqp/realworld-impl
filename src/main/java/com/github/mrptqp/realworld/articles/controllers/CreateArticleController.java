@@ -1,7 +1,7 @@
 package com.github.mrptqp.realworld.articles.controllers;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.github.mrptqp.realworld.profiles.models.Profile;
+import com.github.mrptqp.realworld.profiles.dto.Profile;
 import com.github.mrptqp.realworld.tags.entities.Tag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

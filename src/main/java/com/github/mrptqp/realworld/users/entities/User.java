@@ -1,15 +1,15 @@
 package com.github.mrptqp.realworld.users.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.mrptqp.realworld.articles.entities.Article;
+import com.github.mrptqp.realworld.comments.entities.Comment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
 
     @Email
@@ -25,7 +24,6 @@ public class User {
 
     private String username;
 
-    @JsonIgnore
     private String password;
 
     private String bio;
@@ -34,6 +32,19 @@ public class User {
 
     private String token;
 
-    @JsonIgnore
     private LocalDateTime expireDate;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_follower",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private Set<Follower> followers = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Article> articles;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Comment> comments;
 }

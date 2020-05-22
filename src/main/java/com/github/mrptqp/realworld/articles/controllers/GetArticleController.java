@@ -1,6 +1,6 @@
 package com.github.mrptqp.realworld.articles.controllers;
 
-import com.github.mrptqp.realworld.profiles.models.Profile;
+import com.github.mrptqp.realworld.profiles.dto.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

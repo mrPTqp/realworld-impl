@@ -1,6 +1,5 @@
-package com.github.mrptqp.realworld.articles.controllers;
+package com.github.mrptqp.realworld.tags.controllers;
 
-import com.github.mrptqp.realworld.profiles.models.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetTagsController {
 
     @GetMapping("/tags")
-    public Profile getTags() {
-        return null; //returns a List of Tags
+    public String getTags() { //but must return "List of Tags"!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return "{\"tags\":[\"reactjs\",\"angularjs\"]}";
     }
 }

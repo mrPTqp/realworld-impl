@@ -3,6 +3,8 @@ package com.github.mrptqp.realworld.users.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
+import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
+import com.github.mrptqp.realworld.users.dto.UserDto;
 import com.github.mrptqp.realworld.users.entities.User;
 import com.github.mrptqp.realworld.users.repo.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +23,30 @@ public class CustomerServiceImpl implements CustomerService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public User saveUser(User user) {
-        customerRepository.findByEmail(user.getEmail())
+    public UserDto saveUser(RegisterCredentials registerCredentials) {
+        customerRepository.findByEmail(registerCredentials.getEmail())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
                 });
 
-        customerRepository.findByUsername(user.getUsername())
+        customerRepository.findByUsername(registerCredentials.getUsername())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
                 });
+
+        User user = new User();
+        user.setEmail(registerCredentials.getEmail());
+        user.setUsername(registerCredentials.getUsername());
+        user.setPassword(registerCredentials.getPassword());
 
         customerRepository.save(user);
-        return user;
+
+        UserDto userDto = new UserDto();
+        userDto.setEmail(user.getEmail());
+        userDto.setUsername(user.getUsername());
+        userDto.setPassword(user.getPassword());
+
+        return userDto;
     }
 
     @Override
@@ -45,14 +58,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public User login(String email, String password) {
+    public UserDto login(String email, String password) {
         String existPassword = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
 
         if (existPassword.equals(password)) {
-            return customerRepository.findByEmail(email)
+            User user = customerRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(user.getEmail());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            userDto.setBio(user.getBio());
+            userDto.setImage(user.getImage());
+            userDto.setToken(user.getToken());
+
+            return userDto;
         } else {
             throw new RuntimeException("Wrong password, please try again");
         }

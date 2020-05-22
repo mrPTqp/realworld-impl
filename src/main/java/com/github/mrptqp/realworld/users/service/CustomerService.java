@@ -1,12 +1,14 @@
 package com.github.mrptqp.realworld.users.service;
 
+import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
+import com.github.mrptqp.realworld.users.dto.UserDto;
 import com.github.mrptqp.realworld.users.entities.User;
 
 public interface CustomerService {
 
-    User saveUser(User user);
+    UserDto saveUser(RegisterCredentials registerCredentials);
 
     User findById(Long id);
 
-    User login(String email, String password);
+    UserDto login(String email, String password);
 }

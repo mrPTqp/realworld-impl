@@ -1,13 +1,11 @@
 package com.github.mrptqp.realworld.tags.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.mrptqp.realworld.articles.entities.Article;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +13,10 @@ import javax.persistence.Id;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
 
     private String name;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tags")
+    private Set<Article> articles;
 }

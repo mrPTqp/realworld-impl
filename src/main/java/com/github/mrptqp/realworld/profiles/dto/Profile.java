@@ -1,4 +1,4 @@
-package com.github.mrptqp.realworld.profiles.models;
+package com.github.mrptqp.realworld.profiles.dto;
 
 import lombok.Data;
 
