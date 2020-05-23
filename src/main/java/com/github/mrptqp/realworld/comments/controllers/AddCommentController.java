@@ -15,9 +15,9 @@ import javax.validation.constraints.NotBlank;
 @RequiredArgsConstructor
 public class AddCommentController {
     @PostMapping("/articles/{slug}/comments")
-    public String addComment(
-            @PathVariable("slug") String slug,
-            @RequestBody CommentContent commentContent) {
+    public String addComment(@PathVariable("slug") String slug,
+                             @RequestBody CommentContent commentContent
+    ) {
         return null; //returns the created Comment
     }
 }

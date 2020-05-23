@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DeleteCommentsController {
     @DeleteMapping("/articles/{slug}/comments/{id}")
-    public String deleteComment(
-            @PathVariable("slug") String slug,
-            @PathVariable("id") String id
+    public String deleteComment(@PathVariable("slug") String slug,
+                                @PathVariable("id") String id
     ) {
         return "The comment has been deleted.";
     }

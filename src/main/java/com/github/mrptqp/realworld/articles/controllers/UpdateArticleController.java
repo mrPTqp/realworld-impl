@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateArticleController {
 
     @PutMapping("/articles/{slug}")
-    public Profile updateArticles(
-            @PathVariable("slug") String slug,
-            @RequestBody UpdatedArticleContent updatedArticleContent
+    public Profile updateArticles(@PathVariable("slug") String slug,
+                                  @RequestBody UpdatedArticleContent updatedArticleContent
     ) {
         return null; //returns the updated Article
         //The slug also gets updated when the title is changed
