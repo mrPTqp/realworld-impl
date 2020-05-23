@@ -39,11 +39,11 @@ test {
 }
 
 bootJar {
-    mainClassName = 'com.github.mrptqp.githubapiwrapper.GithubApiWrapperApplication'
+    mainClassName = 'com.github.mrptqp.realworld.RealWorldApplication'
 }
 
 jar {
     manifest {
-        attributes "Main-Class": "com.github.mrptqp.githubapiwrapper.GithubApiWrapperApplication"
+        attributes "Main-Class": "com.github.mrptqp.realworld.RealWorldApplication"
     }
 }
