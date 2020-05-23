@@ -1,6 +1,6 @@
 package com.github.mrptqp.realworld.users.service;
 
-import com.github.mrptqp.realworld._exceptions.ForbiddenException;
+import com.github.mrptqp.realworld._exceptions.UnauthorizedException;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
 import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
@@ -9,6 +9,7 @@ import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.entities.User;
 import com.github.mrptqp.realworld.users.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 //    private final ObjectMapper objectMapper;
 
     @Override
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setEmail(registerCredentials.getEmail());
         user.setUsername(registerCredentials.getUsername());
-        user.setPassword(registerCredentials.getPassword());
+        user.setPassword(encoder.encode(registerCredentials.getPassword()));
 
         userRepository.save(user);
 
@@ -45,8 +46,7 @@ public class UserServiceImpl implements UserService {
                 user.getUsername(),
                 null,
                 null,
-                null,
-                user.getPassword()
+                null
         );
 
         return new UserDtoWrapper(userDto);
@@ -63,8 +63,7 @@ public class UserServiceImpl implements UserService {
                 user.getUsername(),
                 null,
                 null,
-                null,
-                user.getPassword()
+                null
         );
 
         return new UserDtoWrapper(userDto);
@@ -77,7 +76,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
 
-        if (existPassword.equals(password)) {
+        if (encoder.matches(password, existPassword)) {
             User user = userRepository
                     .findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException(
@@ -89,13 +88,12 @@ public class UserServiceImpl implements UserService {
                     user.getUsername(),
                     null,
                     null,
-                    null,
-                    user.getPassword()
+                    null
             );
 
             return new UserDtoWrapper(userDto);
         } else {
-            throw new ForbiddenException("Wrong password, please try again");
+            throw new UnauthorizedException("Password is incorrect, try again.");
         }
     }
 
