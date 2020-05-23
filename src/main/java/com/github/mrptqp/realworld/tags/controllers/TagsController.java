@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class GetTagsController {
+public class TagsController {
 
     @GetMapping("/tags")
     public String getTags() { //but must return "List of Tags"!!!!!!!!!!!!!!!!!!!!!!!!!!
