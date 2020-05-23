@@ -12,13 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service("userService")
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-//    private final ObjectMapper objectMapper;
 
     @Override
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
@@ -44,9 +45,9 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto(
                 user.getEmail(),
                 user.getUsername(),
-                null,
-                null,
-                null
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
         );
 
         return new UserDtoWrapper(userDto);
@@ -86,9 +87,9 @@ public class UserServiceImpl implements UserService {
             UserDto userDto = new UserDto(
                     user.getEmail(),
                     user.getUsername(),
-                    null,
-                    null,
-                    null
+                    Optional.ofNullable(user.getToken()),
+                    Optional.ofNullable(user.getBio()),
+                    Optional.ofNullable(user.getImage())
             );
 
             return new UserDtoWrapper(userDto);

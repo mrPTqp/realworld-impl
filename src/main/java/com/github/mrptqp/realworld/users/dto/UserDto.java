@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Optional;
+
 @Data
 @AllArgsConstructor
 public class UserDto {
@@ -14,12 +16,12 @@ public class UserDto {
     private String username;
 
     @JsonProperty("token")
-    private String token;
+    private Optional<String> token;
 
     @JsonProperty("bio")
-    private String bio;
+    private Optional<String> bio;
 
     @JsonProperty("image")
-    private String image;
+    private Optional<String> image;
 
 }
