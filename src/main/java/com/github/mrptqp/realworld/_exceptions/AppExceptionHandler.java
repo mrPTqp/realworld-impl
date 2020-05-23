@@ -48,6 +48,15 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(value = {ForbiddenException.class})
+    public ResponseEntity<Object> handleForbiddenException(ForbiddenException ex) {
+        return new ResponseEntity<>(
+                getErrorMessage(ex, HttpStatus.FORBIDDEN),
+                new HttpHeaders(),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
     private ErrorMessage getErrorMessage(Exception ex, HttpStatus status) {
         String errorMessageDescription = ex.getLocalizedMessage();
 

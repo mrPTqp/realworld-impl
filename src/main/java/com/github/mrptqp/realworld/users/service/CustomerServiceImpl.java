@@ -1,5 +1,6 @@
 package com.github.mrptqp.realworld.users.service;
 
+import com.github.mrptqp.realworld._exceptions.ForbiddenException;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
 import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
@@ -94,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             return new UserDtoWrapper(userDto);
         } else {
-            throw new RuntimeException("Wrong password, please try again");
+            throw new ForbiddenException("Wrong password, please try again");
         }
     }
 
