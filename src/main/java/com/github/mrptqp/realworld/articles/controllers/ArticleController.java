@@ -19,7 +19,7 @@ public class ArticleController {
     }
 
     @PostMapping("/articles/{slug}/favorite")
-    public String favoriteArticle(@PathVariable("slug") String slug) {
+    public String addToFavorite(@PathVariable("slug") String slug) {
         return null; //returns the Article
     }
 
@@ -47,7 +47,7 @@ public class ArticleController {
     }
 
     @DeleteMapping("/articles/{slug}/favorite")
-    public String unFavoriteArticle(@PathVariable("slug") String slug) {
+    public String removeFromFavorite(@PathVariable("slug") String slug) {
         return null; //returns the Article
     }
 
