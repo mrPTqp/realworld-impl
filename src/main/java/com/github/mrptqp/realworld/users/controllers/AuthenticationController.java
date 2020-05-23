@@ -1,6 +1,6 @@
 package com.github.mrptqp.realworld.users.controllers;
 
-import com.github.mrptqp.realworld.users.dto.UserDto;
+import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ public class AuthenticationController {
     private final CustomerService customerService;
 
     @PostMapping("/users/login")
-    public UserDto login(@RequestBody LoginCredentials loginCredentials) {
+    public UserDtoWrapper login(@RequestBody LoginCredentials loginCredentials) {
         return customerService.login(loginCredentials.getEmail(), loginCredentials.getPassword());
     }
 }

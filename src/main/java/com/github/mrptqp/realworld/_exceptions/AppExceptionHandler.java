@@ -14,7 +14,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {UserAlreadyExistException.class})
     public ResponseEntity<Object> handleUserAlreadyExistException(UserAlreadyExistException ex) {
-
         return new ResponseEntity<>(
                 getErrorMessage(ex, HttpStatus.CONFLICT),
                 new HttpHeaders(),
@@ -24,7 +23,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {UserNotFoundException.class})
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
-
         return new ResponseEntity<>(
                 getErrorMessage(ex, HttpStatus.NOT_FOUND),
                 new HttpHeaders(),
@@ -34,7 +32,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BadRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
-
         return new ResponseEntity<>(
                 getErrorMessage(ex, HttpStatus.BAD_REQUEST),
                 new HttpHeaders(),
@@ -44,7 +41,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {UnauthorizedException.class})
     public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
-
         return new ResponseEntity<>(
                 getErrorMessage(ex, HttpStatus.UNAUTHORIZED),
                 new HttpHeaders(),

@@ -1,6 +1,6 @@
 package com.github.mrptqp.realworld.users.controllers;
 
-import com.github.mrptqp.realworld.users.dto.UserDto;
+import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ public class RegistrationController {
     private final CustomerService customerService;
 
     @PostMapping("/users")
-    public UserDto addUser(@RequestBody RegisterCredentials registerCredentials) {
+    public UserDtoWrapper addUser(@RequestBody RegisterCredentials registerCredentials) {
         return customerService.saveUser(registerCredentials);
     }
 }

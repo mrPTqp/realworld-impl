@@ -1,10 +1,10 @@
 package com.github.mrptqp.realworld.users.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
 import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
 import com.github.mrptqp.realworld.users.dto.UserDto;
+import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.entities.User;
 import com.github.mrptqp.realworld.users.repo.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +16,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     //    private final PasswordEncoder encoder;
-    private final ObjectMapper objectMapper;
+//    private final ObjectMapper objectMapper;
 
     @Override
-    public UserDto saveUser(RegisterCredentials registerCredentials) {
+    public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
         customerRepository.findByEmail(registerCredentials.getEmail())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(user);
 
-        return new UserDto(
+        UserDto userDto = new UserDto(
                 user.getEmail(),
                 user.getUsername(),
                 null,
@@ -45,25 +45,29 @@ public class CustomerServiceImpl implements CustomerService {
                 null,
                 user.getPassword()
         );
+
+        return new UserDtoWrapper(userDto);
     }
 
     @Override
-    public UserDto findById(Long id) {
+    public UserDtoWrapper findById(Long id) {
         User user = customerRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your id"));
 
-        return new UserDto(
+        UserDto userDto = new UserDto(
                 user.getEmail(),
                 user.getUsername(),
-                user.getToken(),
-                user.getBio(),
-                user.getImage(),
+                null,
+                null,
+                null,
                 user.getPassword()
         );
+
+        return new UserDtoWrapper(userDto);
     }
 
     @Override
-    public UserDto login(String email, String password) {
+    public UserDtoWrapper login(String email, String password) {
         String existPassword = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
@@ -72,14 +76,16 @@ public class CustomerServiceImpl implements CustomerService {
             User user = customerRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
 
-            return new UserDto(
+            UserDto userDto = new UserDto(
                     user.getEmail(),
                     user.getUsername(),
-                    user.getToken(),
-                    user.getBio(),
-                    user.getImage(),
+                    null,
+                    null,
+                    null,
                     user.getPassword()
             );
+
+            return new UserDtoWrapper(userDto);
         } else {
             throw new RuntimeException("Wrong password, please try again");
         }
