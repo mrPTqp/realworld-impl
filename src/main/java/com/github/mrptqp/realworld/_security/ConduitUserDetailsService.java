@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MyUserDetailsService implements UserDetailsService {
+public class ConduitUserDetailsService implements UserDetailsService {
     private CustomerRepository customerRepository;
 
 
@@ -24,6 +24,6 @@ public class MyUserDetailsService implements UserDetailsService {
                 .flatMap(customerRepository::findByEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with email=" + username));
 
-        return new MyUserDetails(user);
+        return new ConduitUserDetails(user);
     }
 }

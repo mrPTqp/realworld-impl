@@ -9,13 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @NoArgsConstructor
-public class MyUserDetails implements UserDetails {
+public class ConduitUserDetails implements UserDetails {
 
     private String email;
 
     private String password;
 
-    public MyUserDetails(User user) {
+    public ConduitUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
     }
