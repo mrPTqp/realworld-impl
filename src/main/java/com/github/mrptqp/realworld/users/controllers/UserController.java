@@ -2,7 +2,7 @@ package com.github.mrptqp.realworld.users.controllers;
 
 import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.entities.User;
-import com.github.mrptqp.realworld.users.service.CustomerService;
+import com.github.mrptqp.realworld.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final CustomerService customerService;
+    private final UserService userService;
 
     @PostMapping("/users/login")
     public UserDtoWrapper login(@RequestBody LoginCredentials loginCredentials) {
-        return customerService.login(loginCredentials.getEmail(), loginCredentials.getPassword());
+        return userService.login(loginCredentials.getEmail(), loginCredentials.getPassword());
     }
 
     @GetMapping("/user")
@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping("/users")
     public UserDtoWrapper addUser(@RequestBody RegisterCredentials registerCredentials) {
-        return customerService.saveUser(registerCredentials);
+        return userService.saveUser(registerCredentials);
     }
 
     @PutMapping("/user")

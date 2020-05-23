@@ -7,27 +7,27 @@ import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
 import com.github.mrptqp.realworld.users.dto.UserDto;
 import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.entities.User;
-import com.github.mrptqp.realworld.users.repo.CustomerRepository;
+import com.github.mrptqp.realworld.users.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service("customerService")
+@Service("userService")
 @RequiredArgsConstructor
-public class CustomerServiceImpl implements CustomerService {
+public class UserServiceImpl implements UserService {
 
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
 //    private final PasswordEncoder encoder;
 //    private final ObjectMapper objectMapper;
 
     @Override
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
-        customerRepository
+        userRepository
                 .findByEmail(registerCredentials.getEmail())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
                 });
 
-        customerRepository
+        userRepository
                 .findByUsername(registerCredentials.getUsername())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.setUsername(registerCredentials.getUsername());
         user.setPassword(registerCredentials.getPassword());
 
-        customerRepository.save(user);
+        userRepository.save(user);
 
         UserDto userDto = new UserDto(
                 user.getEmail(),
@@ -54,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserDtoWrapper findById(Long id) {
-        User user = customerRepository
+        User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your id"));
 
@@ -72,13 +72,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserDtoWrapper login(String email, String password) {
-        String existPassword = customerRepository
+        String existPassword = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
 
         if (existPassword.equals(password)) {
-            User user = customerRepository
+            User user = userRepository
                     .findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException(
                             "User not found. Please check your login and password"
@@ -114,7 +114,7 @@ public class CustomerServiceImpl implements CustomerService {
 //            String token = UUID.randomUUID().toString();
 //            user.setToken(token);
 //            user.setExpireDate(LocalDateTime.now().plusHours(24));
-//            customerRepository.save(user);
+//            userRepository.save(user);
 //
 //            return token;
 //        };
