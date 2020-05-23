@@ -15,17 +15,19 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    //    private final PasswordEncoder encoder;
+//    private final PasswordEncoder encoder;
 //    private final ObjectMapper objectMapper;
 
     @Override
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
-        customerRepository.findByEmail(registerCredentials.getEmail())
+        customerRepository
+                .findByEmail(registerCredentials.getEmail())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
                 });
 
-        customerRepository.findByUsername(registerCredentials.getUsername())
+        customerRepository
+                .findByUsername(registerCredentials.getUsername())
                 .ifPresent(u -> {
                     throw new UserAlreadyExistException("User already exists! Choose a different name.");
                 });
@@ -51,7 +53,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserDtoWrapper findById(Long id) {
-        User user = customerRepository.findById(id)
+        User user = customerRepository
+                .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your id"));
 
         UserDto userDto = new UserDto(
@@ -68,13 +71,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserDtoWrapper login(String email, String password) {
-        String existPassword = customerRepository.findByEmail(email)
+        String existPassword = customerRepository
+                .findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
                 .getPassword();
 
         if (existPassword.equals(password)) {
-            User user = customerRepository.findByEmail(email)
-                    .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
+            User user = customerRepository
+                    .findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException(
+                            "User not found. Please check your login and password"
+                    ));
 
             UserDto userDto = new UserDto(
                     user.getEmail(),
