@@ -7,7 +7,7 @@ public interface UserService {
 
     UserDtoWrapper saveUser(RegisterCredentials registerCredentials);
 
-    UserDtoWrapper findById(Long id);
+    UserDtoWrapper getCurrentUser(String email);
 
     UserDtoWrapper login(String email, String password);
 }
