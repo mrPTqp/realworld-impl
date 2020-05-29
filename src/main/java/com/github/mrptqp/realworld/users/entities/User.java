@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,8 +30,6 @@ public class User {
     private String image;
 
     private String token;
-
-    private LocalDateTime expireDate;
 
     @ManyToMany
     @JoinTable(

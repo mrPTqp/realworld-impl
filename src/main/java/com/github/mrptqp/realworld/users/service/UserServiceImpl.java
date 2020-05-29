@@ -1,8 +1,10 @@
 package com.github.mrptqp.realworld.users.service;
 
+import com.github.mrptqp.realworld._exceptions.BadRequestException;
 import com.github.mrptqp.realworld._exceptions.UnauthorizedException;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
+import com.github.mrptqp.realworld._security.JwtUtil;
 import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
 import com.github.mrptqp.realworld.users.dto.UserDto;
 import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtTokenUtil;
     private final PasswordEncoder encoder;
 
     @Override
@@ -26,7 +29,7 @@ public class UserServiceImpl implements UserService {
         userRepository
                 .findByEmail(registerCredentials.getEmail())
                 .ifPresent(u -> {
-                    throw new UserAlreadyExistException("User already exists! Choose a different name.");
+                    throw new UserAlreadyExistException("User already exists! Choose a different email.");
                 });
 
         userRepository
@@ -54,17 +57,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoWrapper findById(Long id) {
+    public UserDtoWrapper getCurrentUser(String email) {
         User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your id"));
+                .findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Invalid token"));
 
         UserDto userDto = new UserDto(
                 user.getEmail(),
                 user.getUsername(),
-                null,
-                null,
-                null
+                Optional.ofNullable(user.getToken()),
+                Optional.ofNullable(user.getBio()),
+                Optional.ofNullable(user.getImage())
         );
 
         return new UserDtoWrapper(userDto);
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public UserDtoWrapper login(String email, String password) {
         String existPassword = userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"))
+                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login"))
                 .getPassword();
 
         if (encoder.matches(password, existPassword)) {
@@ -83,6 +86,13 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new UserNotFoundException(
                             "User not found. Please check your login and password"
                     ));
+
+            userRepository
+                    .login(email, existPassword)
+                    .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login and password"));
+
+            user.setToken(jwtTokenUtil.generateToken(email));
+            userRepository.save(user);
 
             UserDto userDto = new UserDto(
                     user.getEmail(),
@@ -97,26 +107,5 @@ public class UserServiceImpl implements UserService {
             throw new UnauthorizedException("Password is incorrect, try again.");
         }
     }
-
-//    private Function<User, String> getActualToken() {
-//        return user -> {
-//            String existingToken = user.getToken();
-//
-//            if (existingToken != null) {
-//                LocalDateTime expireDate = user.getExpireDate();
-//
-//                if (expireDate.isAfter(LocalDateTime.now())) {
-//                    return existingToken;
-//                }
-//            }
-//
-//            String token = UUID.randomUUID().toString();
-//            user.setToken(token);
-//            user.setExpireDate(LocalDateTime.now().plusHours(24));
-//            userRepository.save(user);
-//
-//            return token;
-//        };
-//    }
 
 }
