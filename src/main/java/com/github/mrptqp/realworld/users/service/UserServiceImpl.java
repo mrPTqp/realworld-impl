@@ -4,8 +4,10 @@ import com.github.mrptqp.realworld._exceptions.BadRequestException;
 import com.github.mrptqp.realworld._exceptions.UnauthorizedException;
 import com.github.mrptqp.realworld._exceptions.UserAlreadyExistException;
 import com.github.mrptqp.realworld._exceptions.UserNotFoundException;
+import com.github.mrptqp.realworld._security.ConduitUserDetails;
 import com.github.mrptqp.realworld._security.JwtUtil;
 import com.github.mrptqp.realworld.users.controllers.RegisterCredentials;
+import com.github.mrptqp.realworld.users.controllers.UpdateCredentials;
 import com.github.mrptqp.realworld.users.dto.UserDto;
 import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
 import com.github.mrptqp.realworld.users.entities.User;
@@ -26,17 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
-        userRepository
-                .findByEmail(registerCredentials.getEmail())
-                .ifPresent(u -> {
-                    throw new UserAlreadyExistException("User already exists! Choose a different email.");
-                });
-
-        userRepository
-                .findByUsername(registerCredentials.getUsername())
-                .ifPresent(u -> {
-                    throw new UserAlreadyExistException("User already exists! Choose a different name.");
-                });
+        checkEmail(registerCredentials.getEmail());
+        checkUsername(registerCredentials.getUsername());
 
         User user = new User();
         user.setEmail(registerCredentials.getEmail());
@@ -48,9 +41,9 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto(
                 user.getEmail(),
                 user.getUsername(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                Optional.ofNullable(user.getToken()),
+                Optional.ofNullable(user.getBio()),
+                Optional.ofNullable(user.getImage())
         );
 
         return new UserDtoWrapper(userDto);
@@ -75,17 +68,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoWrapper login(String email, String password) {
-        String existPassword = userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login"))
-                .getPassword();
+        String existPassword = getPasswordFromRepository(email);
 
         if (encoder.matches(password, existPassword)) {
-            User user = userRepository
-                    .findByEmail(email)
-                    .orElseThrow(() -> new UserNotFoundException(
-                            "User not found. Please check your login and password"
-                    ));
+            User user = getUserFromRepository(email);
 
             userRepository
                     .login(email, existPassword)
@@ -108,4 +94,81 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public UserDtoWrapper updateUser(ConduitUserDetails userDetails, UpdateCredentials updateCredentials) {
+        User user = getUserFromRepository(userDetails.getUsername());
+        setUpdatedParameters(updateCredentials, user);
+        userRepository.save(user);
+
+        UserDto userDto = new UserDto(
+                user.getEmail(),
+                user.getUsername(),
+                Optional.ofNullable(user.getToken()),
+                Optional.ofNullable(user.getBio()),
+                Optional.ofNullable(user.getImage())
+        );
+
+        return new UserDtoWrapper(userDto);
+    }
+
+    private void checkEmail(String email) {
+        userRepository
+                .findByEmail(email)
+                .ifPresent(u -> {
+                    throw new UserAlreadyExistException("User already exists! Choose a different email.");
+                });
+    }
+
+    private void checkUsername(String username) {
+        userRepository
+                .findByUsername(username)
+                .ifPresent(u -> {
+                    throw new UserAlreadyExistException("User already exists! Choose a different name.");
+                });
+    }
+
+    private void setUpdatedParameters(UpdateCredentials updateCredentials, User user) {
+        String updatedEmail = updateCredentials.getEmail();
+
+        if (!"".equals(updatedEmail)) {
+            checkEmail(updatedEmail);
+            user.setEmail(updatedEmail);
+        }
+
+        String updatedUsername = updateCredentials.getUsername();
+
+        if (!"".equals(updatedUsername)) {
+            checkUsername(updatedUsername);
+            user.setUsername(updatedUsername);
+        }
+
+        if (!"".equals(updateCredentials.getPassword())) {
+            user.setPassword(encoder.encode(updateCredentials.getPassword()));
+        }
+
+        if (!"".equals(updateCredentials.getBio())) {
+            user.setBio(updateCredentials.getBio());
+        }
+
+        if (!"".equals(updateCredentials.getImage())) {
+            user.setImage(updateCredentials.getImage());
+        }
+
+        user.setToken(jwtTokenUtil.generateToken(updatedEmail));
+    }
+
+    private User getUserFromRepository(String email) {
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(
+                        "User not found. Please check your login"
+                ));
+    }
+
+    private String getPasswordFromRepository(String email) {
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found. Please check your login"))
+                .getPassword();
+    }
 }

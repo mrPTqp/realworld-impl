@@ -9,11 +9,11 @@ import javax.validation.constraints.Email;
 @Getter
 @JsonRootName("user")
 @NoArgsConstructor
-class UpdateCredentials {
+public class UpdateCredentials {
     @Email(message = "should be an email")
-    private String email;
-    private String username;
-    private String password;
-    private String bio;
-    private String image;
+    private String email = "";
+    private String password = "";
+    private String username = "";
+    private String bio = "";
+    private String image = "";
 }

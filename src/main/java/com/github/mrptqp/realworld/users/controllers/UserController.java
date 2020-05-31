@@ -2,7 +2,6 @@ package com.github.mrptqp.realworld.users.controllers;
 
 import com.github.mrptqp.realworld._security.ConduitUserDetails;
 import com.github.mrptqp.realworld.users.dto.UserDtoWrapper;
-import com.github.mrptqp.realworld.users.entities.User;
 import com.github.mrptqp.realworld.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +29,10 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public User updateUser(@RequestBody UpdateCredentials updateCredentials) {
-        User mock = new User();
-        mock.setUsername("MOCK");
-        mock.setEmail("MOCK");
-        return mock;
+    public UserDtoWrapper updateUser(
+            @AuthenticationPrincipal ConduitUserDetails userDetails,
+            @RequestBody UpdateCredentials updateCredentials
+    ) {
+        return userService.updateUser(userDetails, updateCredentials);
     }
 }
