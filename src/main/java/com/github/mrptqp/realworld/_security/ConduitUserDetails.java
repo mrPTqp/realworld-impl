@@ -13,11 +13,14 @@ public class ConduitUserDetails implements UserDetails {
 
     private String email;
 
+    private String username;
+
     private String password;
 
     public ConduitUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
+        this.username = user.getUsername();
     }
 
     @Override
@@ -32,7 +35,7 @@ public class ConduitUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -53,5 +56,9 @@ public class ConduitUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

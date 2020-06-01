@@ -1,6 +1,6 @@
 package com.github.mrptqp.realworld.articles.controllers;
 
-import com.github.mrptqp.realworld.profiles.dto.Profile;
+import com.github.mrptqp.realworld.profiles.dto.ProfileDtoWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
 
     @PostMapping("/articles")
-    public Profile createArticles(@RequestBody ArticleContent articleContent) {
+    public ProfileDtoWrapper createArticles(@RequestBody ArticleContent articleContent) {
         return null; //Authentication required, will return an Article
     }
 
@@ -24,14 +24,14 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/feed")
-    public Profile getFeedArticles(@RequestParam(value = "limit", defaultValue = "20") int limit,
-                                   @RequestParam(value = "offset", defaultValue = "0") int offset
+    public ProfileDtoWrapper getFeedArticles(@RequestParam(value = "limit", defaultValue = "20") int limit,
+                                             @RequestParam(value = "offset", defaultValue = "0") int offset
     ) {
         return null; //will return multiple articles created by followed users, ordered by most recent first.
     }
 
     @GetMapping("/articles/{slug}")
-    public Profile getArticle(@PathVariable("slug") String slug) {
+    public ProfileDtoWrapper getArticle(@PathVariable("slug") String slug) {
         return null; //will return single article
     }
 
@@ -52,8 +52,8 @@ public class ArticleController {
     }
 
     @PutMapping("/articles/{slug}")
-    public Profile updateArticles(@PathVariable("slug") String slug,
-                                  @RequestBody UpdatedArticleContent updatedArticleContent
+    public ProfileDtoWrapper updateArticles(@PathVariable("slug") String slug,
+                                            @RequestBody UpdatedArticleContent updatedArticleContent
     ) {
         return null; //returns the updated Article
         //The slug also gets updated when the title is changed

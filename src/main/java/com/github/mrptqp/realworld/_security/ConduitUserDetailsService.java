@@ -15,7 +15,6 @@ import java.util.Optional;
 public class ConduitUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = Optional

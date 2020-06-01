@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping("/user")
     public UserDtoWrapper getCurrentUser(@AuthenticationPrincipal ConduitUserDetails user) {
-        return userService.getCurrentUser(user.getUsername());
+        return userService.getCurrentUser(user.getEmail());
     }
 
     @PutMapping("/user")
