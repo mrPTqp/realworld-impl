@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service("userService")
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
 
     @Override
+    @Transactional
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
         checkEmailExists(registerCredentials.getEmail());
         checkUsernameExists(registerCredentials.getUsername());
@@ -67,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDtoWrapper login(String email, String password) {
         String existPassword = getPasswordFromRepository(email);
 
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDtoWrapper updateUser(ConduitUserDetails userDetails, UpdateCredentials updateCredentials) {
         User user = getUserFromRepository(userDetails.getUsername());
         setUpdatedParameters(updateCredentials, user);
