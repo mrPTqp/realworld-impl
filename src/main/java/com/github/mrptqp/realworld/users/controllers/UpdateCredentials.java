@@ -11,9 +11,9 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 public class UpdateCredentials {
     @Email(message = "should be an email")
-    private String email = "";
-    private String password = "";
-    private String username = "";
-    private String bio = "";
-    private String image = "";
+    private String email;
+    private String password;
+    private String username;
+    private String bio;
+    private String image;
 }

@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoWrapper saveUser(RegisterCredentials registerCredentials) {
-        checkEmail(registerCredentials.getEmail());
-        checkUsername(registerCredentials.getUsername());
+        checkEmailExists(registerCredentials.getEmail());
+        checkUsernameExists(registerCredentials.getUsername());
 
         User user = new User();
         user.setEmail(registerCredentials.getEmail());
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
         return new UserDtoWrapper(userDto);
     }
 
-    private void checkEmail(String email) {
+    private void checkEmailExists(String email) {
         userRepository
                 .findByEmail(email)
                 .ifPresent(u -> {
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                 });
     }
 
-    private void checkUsername(String username) {
+    private void checkUsernameExists(String username) {
         userRepository
                 .findByUsername(username)
                 .ifPresent(u -> {
@@ -130,27 +130,27 @@ public class UserServiceImpl implements UserService {
     private void setUpdatedParameters(UpdateCredentials updateCredentials, User user) {
         String updatedEmail = updateCredentials.getEmail();
 
-        if (!"".equals(updatedEmail)) {
-            checkEmail(updatedEmail);
+        if (updatedEmail != null) {
+            checkEmailExists(updatedEmail);
             user.setEmail(updatedEmail);
         }
 
         String updatedUsername = updateCredentials.getUsername();
 
-        if (!"".equals(updatedUsername)) {
-            checkUsername(updatedUsername);
+        if (updatedUsername != null) {
+            checkUsernameExists(updatedUsername);
             user.setUsername(updatedUsername);
         }
 
-        if (!"".equals(updateCredentials.getPassword())) {
+        if (updateCredentials.getPassword() != null) {
             user.setPassword(encoder.encode(updateCredentials.getPassword()));
         }
 
-        if (!"".equals(updateCredentials.getBio())) {
+        if (updateCredentials.getBio() != null) {
             user.setBio(updateCredentials.getBio());
         }
 
-        if (!"".equals(updateCredentials.getImage())) {
+        if (updateCredentials.getImage() != null) {
             user.setImage(updateCredentials.getImage());
         }
 
