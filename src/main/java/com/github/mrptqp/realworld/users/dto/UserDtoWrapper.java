@@ -8,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserDtoWrapper {
     @JsonProperty("user")
-    private UserDto user;
+    private UserDto userDto;
 }
