@@ -23,14 +23,11 @@ public class ProfileServiceImpl implements ProfileService {
         if (currentUserDetails != null) {
             User currentUser = getUser(currentUserDetails.getUsername());
 
-            boolean isFollow;
-            isFollow = user.getSubscribers().contains(currentUser);
-
             ProfileDto profileDto = new ProfileDto(
                     user.getUsername(),
                     Optional.ofNullable(user.getBio()),
                     Optional.ofNullable(user.getImage()),
-                    isFollow
+                    user.getSubscribers().contains(currentUser)
             );
 
             return new ProfileDtoWrapper(profileDto);
