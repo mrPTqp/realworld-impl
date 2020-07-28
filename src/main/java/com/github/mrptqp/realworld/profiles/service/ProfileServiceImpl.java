@@ -9,6 +9,7 @@ import com.github.mrptqp.realworld.users.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service("profileService")
@@ -52,6 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public ProfileDtoWrapper follow(ConduitUserDetails currentUserDetails, String username) {
         User currentUser = getUser(currentUserDetails.getUsername());
         User user = getUser(username);
@@ -70,6 +72,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public ProfileDtoWrapper unfollow(ConduitUserDetails currentUserDetails, String username) {
         User currentUser = getUser(currentUserDetails.getUsername());
         User user = getUser(username);
