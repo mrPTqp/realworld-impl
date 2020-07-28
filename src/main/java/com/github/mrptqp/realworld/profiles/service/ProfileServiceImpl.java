@@ -18,18 +18,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDtoWrapper getProfile(ConduitUserDetails currentUserDetails, String username) {
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User not found. Please check your login and password"
-                ));
+        User user = getUser(username);
 
         if (currentUserDetails != null) {
-            User currentUser = userRepository
-                    .findByUsername(currentUserDetails.getUsername())
-                    .orElseThrow(() -> new UserNotFoundException(
-                            "User not found. Please check your login and password"
-                    ));
+            User currentUser = getUser(currentUserDetails.getUsername());
 
             boolean isFollow;
             isFollow = user.getSubscribers().contains(currentUser);
@@ -54,18 +46,18 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    @Override
-    public ProfileDtoWrapper follow(ConduitUserDetails currentUserDetails, String username) {
-        User currentUser = userRepository
-                .findByUsername(currentUserDetails.getUsername())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User not found. Please check your login and password"
-                ));
-        User user = userRepository
+    private User getUser(String username) {
+        return userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(
                         "User not found. Please check your login and password"
                 ));
+    }
+
+    @Override
+    public ProfileDtoWrapper follow(ConduitUserDetails currentUserDetails, String username) {
+        User currentUser = getUser(currentUserDetails.getUsername());
+        User user = getUser(username);
 
         user.getSubscribers().add(currentUser);
         userRepository.save(user);
@@ -82,16 +74,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDtoWrapper unfollow(ConduitUserDetails currentUserDetails, String username) {
-        User currentUser = userRepository
-                .findByUsername(currentUserDetails.getUsername())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User not found. Please check your login and password"
-                ));
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User not found. Please check your login and password"
-                ));
+        User currentUser = getUser(currentUserDetails.getUsername());
+        User user = getUser(username);
 
         user.getSubscribers().remove(currentUser);
         userRepository.save(user);
