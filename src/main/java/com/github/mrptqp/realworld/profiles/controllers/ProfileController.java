@@ -1,40 +1,35 @@
 package com.github.mrptqp.realworld.profiles.controllers;
 
-import com.github.mrptqp.realworld.profiles.dto.Profile;
+import com.github.mrptqp.realworld._security.ConduitUserDetails;
+import com.github.mrptqp.realworld.profiles.dto.ProfileDtoWrapper;
+import com.github.mrptqp.realworld.profiles.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class ProfileController {
+    private final ProfileService profileService;
 
     @GetMapping("/profiles/{username}")
-    public Profile getProfile(@PathVariable("username") String username) {
-        Profile mock = new Profile();
-        mock.setUsername("MOCK");
-        mock.setBio("MOCK");
-        mock.setImage("MOCK");
-
-        return mock;
+    public ProfileDtoWrapper getProfile(
+            @AuthenticationPrincipal ConduitUserDetails currentUserDetails,
+            @PathVariable("username") String username) {
+        return profileService.getProfile(currentUserDetails, username);
     }
 
     @PostMapping("/profiles/{username}/follow")
-    public Profile follow(@PathVariable("username") String username) {
-        Profile mock = new Profile();
-        mock.setUsername("MOCK");
-        mock.setBio("MOCK");
-        mock.setImage("MOCK");
-
-        return mock;
+    public ProfileDtoWrapper follow(
+            @AuthenticationPrincipal ConduitUserDetails currentUserDetails,
+            @PathVariable("username") String username) {
+        return profileService.follow(currentUserDetails, username);
     }
 
     @DeleteMapping("/profiles/{username}/follow")
-    public Profile unfollow(@PathVariable("username") String username) {
-        Profile mock = new Profile();
-        mock.setUsername("MOCK");
-        mock.setBio("MOCK");
-        mock.setImage("MOCK");
-
-        return mock;
+    public ProfileDtoWrapper unfollow(
+            @AuthenticationPrincipal ConduitUserDetails currentUserDetails,
+            @PathVariable("username") String username) {
+        return profileService.unfollow(currentUserDetails, username);
     }
 }

@@ -3,6 +3,7 @@ package com.github.mrptqp.realworld.users.entities;
 import com.github.mrptqp.realworld.articles.entities.Article;
 import com.github.mrptqp.realworld.comments.entities.Comment;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode(of = {"id"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,11 +35,19 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_follower",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follower_id")
+            name = "user_subscribers",
+            joinColumns = @JoinColumn(name = "channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
     )
-    private Set<Follower> followers = new HashSet<>();
+    private Set<User> subscribers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscribers",
+            joinColumns = @JoinColumn(name = "subscriber_id"),
+            inverseJoinColumns = @JoinColumn(name = "channel_id")
+    )
+    private Set<User> subscriptions = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Article> articles;
