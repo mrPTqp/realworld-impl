@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @JsonRootName("article")
 @NoArgsConstructor
-class ArticleContent {
+public class ArticleContent {
     @NotBlank(message = "can't be empty")
     private String title;
     @NotBlank(message = "can't be empty")

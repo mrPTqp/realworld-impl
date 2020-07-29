@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @JsonRootName("article")
 @NoArgsConstructor
+public
 class UpdatedArticleContent {
     private String title;
     private String description;
